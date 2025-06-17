@@ -1,4 +1,6 @@
 import random
+import time 
+import os
 
 def dead_state(width, height):
     board=[]
@@ -81,5 +83,26 @@ def next_board_state(initial_state):
                     new_state[y][x] = 0
     return new_state
                 
-    
+if __name__ == "__main__":
+    print("Starting Game of Life simulation...")
+
+    BOARD_WIDTH = 40
+    BOARD_HEIGHT = 20
+    current_board_state = random_state(BOARD_WIDTH, BOARD_HEIGHT)
+
+    # Example of a gliders
+    # current_board_state[1][2] = 1
+    # current_board_state[2][3] = 1
+    # current_board_state[3][1] = 1
+    # current_board_state[3][2] = 1
+    # current_board_state[3][3] = 1
+
+
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        render(current_board_state)
+
+        current_board_state = next_board_state(current_board_state)
+        time.sleep(0.1)     
     
