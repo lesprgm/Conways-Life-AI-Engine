@@ -4,14 +4,17 @@ import time
 import os
 
 def dead_state(width, height):
-    board=[]
+    board = np.zeros((height,width), dtype=int)
+    """
     for i in range(height):
-        row =[0]* width
+        row = [0] * width
         board.append(row)
+    """
     return board
 
 def random_state(width,height):
-    cell_state = dead_state(width,height)
+    cell_state = np.random.randint(0, 2, size= (height, width), dtype =int)
+    """
     for y in range(height):
         for x in range(width):
             random_number = random.random()
@@ -19,6 +22,7 @@ def random_state(width,height):
                 cell_state[y][x] = 1
             else:
                 cell_state[y][x] = 0
+    """
     return cell_state
 
 def render(board_state):
@@ -40,10 +44,14 @@ def render(board_state):
     print("-" * (width + 2))
     
 def get_board_dimensions (board):
+    height = board.shape[0]
+    width = board.shape[1]
+    """
     height = len(board)
     if height == 0:
         return 0, 0
     width = len(board[0])
+    """
     return width, height
 
 def next_board_state(initial_state):
