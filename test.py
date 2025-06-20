@@ -1,15 +1,21 @@
-# test_game_of_life.py
+# test.py
+import numpy as np
 
 # To import from game_of_life.py, ensure both files are in the same directory.
 # If not, you might need to adjust your PYTHONPATH or use a more advanced import structure.
 # For simplicity, we'll assume they are in the same directory.
 from game_of_life import next_board_state, dead_state, random_state, render, get_board_dimensions
 
-# Helper function to run a single test case
-def run_test(test_name, initial_state, expected_next_state):
+# Helper function to run a single test case for next_board_state
+def run_test(test_name, initial_state_list, expected_next_state_list):
     """
     Runs a single test case for next_board_state and prints the result.
+    Converts input lists to NumPy arrays for compatibility with refactored functions.
     """
+    # Convert input lists to NumPy arrays for the refactored next_board_state function
+    initial_state = np.array(initial_state_list, dtype=int)
+    expected_next_state = np.array(expected_next_state_list, dtype=int)
+
     actual_next_state = next_board_state(initial_state)
 
     print(f"--- Running Test: {test_name} ---")
@@ -20,12 +26,74 @@ def run_test(test_name, initial_state, expected_next_state):
     print("Actual Next State:")
     render(actual_next_state)
 
-    if expected_next_state == actual_next_state:
+    if np.array_equal(expected_next_state, actual_next_state):
         print(f"PASSED: {test_name}\n")
     else:
         print(f"FAILED: {test_name}!\n")
+        print("Expected:\n", expected_next_state) # Print raw array for debugging
+        print("Actual:\n", actual_next_state)     # Print raw array for debugging
+
 
 if __name__ == "__main__":
+
+    print("\n--- Verifying dead_state function ---")
+    width_test_ds, height_test_ds = 5, 3
+    test_dead_board = dead_state(width_test_ds, height_test_ds)
+
+    if isinstance(test_dead_board, np.ndarray):
+        print(f"PASSED: dead_state returns a NumPy array. Type: {type(test_dead_board)}")
+    else:
+        print(f"FAILED: dead_state does NOT return a NumPy array. Type: {type(test_dead_board)}")
+
+    if test_dead_board.shape == (height_test_ds, width_test_ds):
+        print(f"PASSED: dead_state board has correct shape {test_dead_board.shape}")
+    else:
+        print(f"FAILED: dead_state board has INCORRECT shape {test_dead_board.shape}. Expected: ({height_test_ds}, {width_test_ds})")
+
+    if test_dead_board.dtype == np.int32 or test_dead_board.dtype == np.int64: # NumPy uses int32/int64 based on system architecture
+        print(f"PASSED: dead_state board has correct dtype {test_dead_board.dtype}")
+    else:
+        print(f"FAILED: dead_state board has INCORRECT dtype {test_dead_board.dtype}. Expected: int")
+
+    if not test_dead_board.any(): # Check if any element is non-zero (i.e., any alive cells)
+        print("PASSED: dead_state board contains only zeros.")
+    else:
+        print("FAILED: dead_state board contains non-zero elements.")
+    print("Rendered Dead Board:")
+    render(test_dead_board)
+    print("-" * 30 + "\n")
+
+
+    print("\n--- Verifying random_state function ---")
+    width_test_rs, height_test_rs = 10, 8
+    test_random_board = random_state(width_test_rs, height_test_rs)
+
+    if isinstance(test_random_board, np.ndarray):
+        print(f"PASSED: random_state returns a NumPy array. Type: {type(test_random_board)}")
+    else:
+        print(f"FAILED: random_state does NOT return a NumPy array. Type: {type(test_random_board)}")
+
+    if test_random_board.shape == (height_test_rs, width_test_rs):
+        print(f"PASSED: random_state board has correct shape {test_random_board.shape}")
+    else:
+        print(f"FAILED: random_state board has INCORRECT shape {test_random_board.shape}. Expected: ({height_test_rs}, {width_test_rs})")
+
+    if test_random_board.dtype == np.int32 or test_random_board.dtype == np.int64:
+        print(f"PASSED: random_state board has correct dtype {test_random_board.dtype}")
+    else:
+        print(f"FAILED: random_state board has INCORRECT dtype {test_random_board.dtype}. Expected: int")
+
+    # A simple check that it's actually random (not all zeros or all ones)
+    if test_random_board.any() and not np.all(test_random_board == 1):
+        print("PASSED: random_state board appears to be randomized (not all dead or all alive).")
+    else:
+        print("FAILED: random_state board might not be truly random (all dead or all alive).")
+    print("Rendered Random Board:")
+    render(test_random_board)
+    print("-" * 30 + "\n")
+
+    # --- EXISTING TESTS FOR NEXT_BOARD_STATE (modified to convert inputs to NumPy) ---
+
     # TEST 1: Dead cells with no live neighbors should stay dead.
     init_state_1 = [
         [0,0,0],
@@ -46,8 +114,8 @@ if __name__ == "__main__":
         [0,0,0]
     ]
     expected_next_state_2 = [
-        [0,1,1], # The middle 0 becomes 1
-        [0,1,1], # This 1 stays 1
+        [0,1,1],
+        [0,1,1],
         [0,0,0]
     ]
     run_test("Dead cells (3 neighbors) come alive", init_state_2, expected_next_state_2)
@@ -55,12 +123,12 @@ if __name__ == "__main__":
     # TEST 3: Live cell with < 2 neighbors dies (Underpopulation).
     init_state_3 = [
         [0,0,0],
-        [0,1,0], # This is the cell to test
+        [0,1,0],
         [0,0,0]
     ]
     expected_next_state_3 = [
         [0,0,0],
-        [0,0,0], # The middle 1 should die
+        [0,0,0],
         [0,0,0]
     ]
     run_test("Live cell (<2 neighbors) dies", init_state_3, expected_next_state_3)
@@ -68,19 +136,19 @@ if __name__ == "__main__":
     # TEST 4: Live cell with 2 or 3 neighbors stays alive. (Stasis)
     init_state_4_2_neighbors = [
         [0,1,0],
-        [0,1,0], # Cell to test
+        [0,1,0],
         [0,1,0]
     ]
     expected_next_state_4_2_neighbors = [
         [0,0,0], # The 1s here have only 1 neighbor each, so they die
-        [0,1,0], # The center 1 has 2 neighbors and stays alive
+        [1,1,1], 
         [0,0,0]
     ]
     run_test("Live cell (2 neighbors) stays alive", init_state_4_2_neighbors, expected_next_state_4_2_neighbors)
 
     init_state_4_3_neighbors = [
         [1,1,0],
-        [0,1,0], # Cell to test
+        [0,1,0],
         [0,1,0]
     ]
     expected_next_state_4_3_neighbors = [
@@ -88,10 +156,6 @@ if __name__ == "__main__":
         [0,1,0],
         [0,1,0]
     ]
-    # For this one, the '1' at (0,0) has 1 neighbor (0,1), so it dies.
-    # The '1' at (0,1) has 2 neighbors (0,0) and (1,1), so it stays.
-    # The '1' at (1,1) has 3 neighbors (0,1), (0,0), (2,1), so it stays.
-    # The '1' at (2,1) has 1 neighbor (1,1), so it dies.
     # This specific example is tricky because other cells also change state.
     # Let's create a simpler 3-neighbor test for clarity.
 
@@ -127,9 +191,9 @@ if __name__ == "__main__":
     # Center cell (1,1) has 4 neighbors: (0,1), (1,0), (1,2), (2,1). So it dies.
     # Other cells: (0,1) has 2. (1,0) has 2. (1,2) has 2. (2,1) has 2. All others stay alive.
     expected_next_state_5_overpop = [
-        [0,1,0],
-        [1,0,1], # Center cell (1,1) dies
-        [0,1,0]
+        [1,1,1],
+        [1,0,1], # Center cell dies and the side cells stay alive
+        [1,1,1]
     ]
     run_test("Live cell (>3 neighbors) dies", init_state_5_overpop, expected_next_state_5_overpop)
 
@@ -145,31 +209,10 @@ if __name__ == "__main__":
     expected_next_state_prompt_example = [
         [1,1,1,0,0],
         [0,0,1,1,0],
-        [0,0,0,1,0], # The prompt example has a '#' here. Need to recalculate precisely.
+        [0,0,0,1,0],
         [0,0,0,0,0],
         [1,0,0,1,1]
     ]
-    # I'll manually calculate a few for this to verify my logic,
-    # or you can run this and see if it matches the *provided* expected.
-    # For now, let's trust the provided expected as a reference.
-    # (Manual check: cell (1,1) (initial value 1) has 4 neighbors (0,0),(0,1),(1,0),(1,2),(2,1) -> (0,0) (1), (0,1) (1), (1,0) (0), (1,2) (1), (2,0) (0), (2,1) (1), (2,2) (0)
-    # The prompt's example implies (1,1) goes from 1 -> 0 (dies from overpop). It has (0,0) (1), (0,1) (1), (0,2) (0), (1,0) (0), (1,2) (1), (2,0) (0), (2,1) (1), (2,2) (0). This implies it has 4 neighbors, so it dies.
-    # Cell (2,3) (initial value 0) has 3 neighbors (1,2),(1,3),(2,2),(2,4),(3,2),(3,3),(3,4) -> (1,2) (1), (1,3) (0), (2,2) (0), (2,4) (1), (3,2) (0), (3,3) (1), (3,4) (0). This implies it has 3 neighbors, so it becomes 1. This matches prompt.
-
-    # My manual calculation for the prompt example for cell (2,3) (0-indexed)
-    # init_state_prompt_example[2][3] == 0
-    # Neighbors:
-    # (1,2) = 1  (top-right)
-    # (1,3) = 0
-    # (1,4) = 0
-    # (2,2) = 0  (left)
-    # (2,4) = 1  (right)
-    # (3,2) = 0  (bottom-left)
-    # (3,3) = 1  (bottom)
-    # (3,4) = 0  (bottom-right)
-    # Total live neighbors = 3. So (2,3) should become 1.
-    # This matches the prompt's expected output.
-
     run_test("Prompt example", init_state_prompt_example, expected_next_state_prompt_example)
 
 
