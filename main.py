@@ -5,11 +5,7 @@ pygame.init()
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-CELL_SIZE = 10 
-
-BLACK = (0, 0, 0)       
-WHITE = (255, 255, 255) 
-GREEN = (0, 255, 0)     
+CELL_SIZE = 10     
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -23,7 +19,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False 
 
-    screen.fill(BLACK) 
+    screen.fill("black") 
 
     pygame.display.update() 
 
