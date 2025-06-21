@@ -26,8 +26,7 @@ def random_state(width,height):
     return cell_state
 
 def render(board_state):
-    height = len(board_state)
-    width = len(board_state[0])
+    height, width = board_state.shape
     print("-" * (width + 2))
     
     for y in range(height):
