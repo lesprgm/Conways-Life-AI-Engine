@@ -5,6 +5,7 @@ import numpy as np
 # If not, you might need to adjust your PYTHONPATH or use a more advanced import structure.
 # For simplicity, we'll assume they are in the same directory.
 from game_of_life import next_board_state, dead_state, random_state, render, get_board_dimensions
+from ga_solver import calculate_fitness
 
 # Helper function to run a single test case for next_board_state
 def run_test(test_name, initial_state_list, expected_next_state_list):
@@ -242,3 +243,105 @@ if __name__ == "__main__":
         [0,0,0]
     ]
     run_test("Corner (top-left) dead (3 neighbors) comes alive", init_state_corner_alive, expected_next_state_corner_alive)
+    
+
+    print("\n" + "="*40)
+    print("--- Verifying calculate_fitness function ---")
+    print("="*40 + "\n")
+
+    # TEST F1: Pattern that dies quickly (Underpopulation)
+    # Expected: should survive 1 step, then die on the 2nd step. Fitness = 1.
+    init_state_dies = np.array([
+        [0,0,0],
+        [0,1,0],
+        [0,0,0]
+    ], dtype=int)
+    expected_fitness_dies = 1 # Dies after 1 generation
+
+    actual_fitness_dies = calculate_fitness(init_state_dies, num_simulation_steps=10) # Simulate for 10 steps max
+
+    print(f"--- Running Test: Fitness - Pattern Dies Quickly ---")
+    print("Initial State:")
+    render(init_state_dies)
+    print(f"Expected Fitness: {expected_fitness_dies}")
+    print(f"Actual Fitness: {actual_fitness_dies}")
+    if actual_fitness_dies == expected_fitness_dies:
+        print(f"PASSED: Fitness - Pattern Dies Quickly\n")
+    else:
+        print(f"FAILED: Fitness - Pattern Dies Quickly! Expected {expected_fitness_dies}, Got {actual_fitness_dies}\n")
+
+
+    # TEST F2: Pattern that stabilizes (Still Life - Block)
+    # A block is a still life and should stabilize in the first step. Fitness = 1.
+    init_state_still_life = np.array([
+        [0,0,0,0],
+        [0,1,1,0],
+        [0,1,1,0],
+        [0,0,0,0]
+    ], dtype=int)
+    expected_fitness_still_life = 1 # Stabilizes after 1 generation (current state == next state)
+
+    actual_fitness_still_life = calculate_fitness(init_state_still_life, num_simulation_steps=10)
+
+    print(f"--- Running Test: Fitness - Still Life Stabilizes ---")
+    print("Initial State:")
+    render(init_state_still_life)
+    print(f"Expected Fitness: {expected_fitness_still_life}")
+    print(f"Actual Fitness: {actual_fitness_still_life}")
+    if actual_fitness_still_life == expected_fitness_still_life:
+        print(f"PASSED: Fitness - Still Life Stabilizes\n")
+    else:
+        print(f"FAILED: Fitness - Still Life Stabilizes! Expected {expected_fitness_still_life}, Got {actual_fitness_still_life}\n")
+
+
+    # TEST F3: Pattern that oscillates (Blinker - Period 2)
+    # A blinker flips every generation, it should stabilize (repeat) after 2 generations. Fitness = 2.
+    init_state_blinker = np.array([
+        [0,0,0,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,1,0,0],
+        [0,0,0,0,0]
+    ], dtype=int)
+    expected_fitness_blinker = 2 # Stabilizes (repeats) after 2 generations (needs period-2 check for full accuracy, otherwise might be num_simulation_steps if no period-2 check)
+
+    # If calculate_fitness only has Period-1 check:
+    expected_fitness_blinker_period1_only = 10 # Will run full steps if only Period-1 detected
+    actual_fitness_blinker = calculate_fitness(init_state_blinker, num_simulation_steps=10)
+
+    print(f"--- Running Test: Fitness - Blinker (Period 2) (Assuming Period-1 check only) ---")
+    print("Initial State:")
+    render(init_state_blinker)
+    print(f"Expected Fitness (Period-1 check): {expected_fitness_blinker_period1_only}")
+    print(f"Actual Fitness: {actual_fitness_blinker}")
+    if actual_fitness_blinker == expected_fitness_blinker_period1_only:
+        print(f"PASSED: Fitness - Blinker (Period 2) (Assuming Period-1 check only)\n")
+    else:
+        print(f"FAILED: Fitness - Blinker (Period 2) (Assuming Period-1 check only)! Expected {expected_fitness_blinker_period1_only}, Got {actual_fitness_blinker}\n")
+
+
+    # TEST F4: Pattern that survives all simulation steps (e.g., a simple glider moving off board)
+    # Expected: should survive num_simulation_steps.
+    init_state_survives = np.array([ # A simple glider pattern
+        [0,1,0,0],
+        [0,0,1,0],
+        [1,1,1,0],
+        [0,0,0,0]
+    ], dtype=int)
+    expected_fitness_survives = 10 # Should run for all 10 steps
+
+    actual_fitness_survives = calculate_fitness(init_state_survives, num_simulation_steps=10)
+
+    print(f"--- Running Test: Fitness - Pattern Survives All Steps ---")
+    print("Initial State:")
+    render(init_state_survives)
+    print(f"Expected Fitness: {expected_fitness_survives}")
+    print(f"Actual Fitness: {actual_fitness_survives}")
+    if actual_fitness_survives == expected_fitness_survives:
+        print(f"PASSED: Fitness - Pattern Survives All Steps\n")
+    else:
+        print(f"FAILED: Fitness - Pattern Survives All Steps! Expected {expected_fitness_survives}, Got {actual_fitness_survives}\n")
+
+    print("\n" + "="*40)
+    print("--- End of Fitness Function Tests ---")
+    print("="*40 + "\n")
