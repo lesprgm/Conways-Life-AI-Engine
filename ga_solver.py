@@ -1,17 +1,23 @@
 import numpy as np
-import main
-from game_of_life import(next_board_state)
+from game_of_life import(next_board_state, random_state)
 
 def calculate_fitness ( board, num_simulation_steps):
     current_sim_board = board.copy()
     previous_sim_board = None
-    step_count = 0
-    for step_count in range(num_simulation_steps):
+    for generation in range(1, num_simulation_steps + 1):
         next_sim_board = next_board_state(current_sim_board)
-        step_count += 1
         
         if not next_sim_board.any():
-            return step_count
+            return generation 
         if previous_sim_board is not None and np.array_equal(next_sim_board, previous_sim_board):
-            return step_count
-        return num_simulation_steps
+            return generation
+        previous_sim_board = current_sim_board.copy()
+        current_sim_board = next_sim_board.copy()
+    return num_simulation_steps
+    
+def create_initial_population(population_size, width, height):
+    population =[]
+    for _ in range(population_size):
+        individual_board = random_state(width, height)
+        population.append(individual_board)
+    return population 
