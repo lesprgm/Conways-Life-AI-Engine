@@ -1,5 +1,5 @@
 import numpy as np
-from game_of_life import(next_board_state, random_state)
+from game_of_life import(next_board_state, random_state, random)
 
 def calculate_fitness ( board, num_simulation_steps):
     current_sim_board = board.copy()
@@ -21,3 +21,8 @@ def create_initial_population(population_size, width, height):
         individual_board = random_state(width, height)
         population.append(individual_board)
     return population 
+
+def select_parents(population, fitness, tournament_size):
+    participants = random.sample(list(zip(population, fitness)),tournament_size)
+    winner = max(participants, key= lambda x: x[1])
+    return winner[0]
