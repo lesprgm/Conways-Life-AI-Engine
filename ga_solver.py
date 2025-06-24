@@ -34,7 +34,7 @@ def crossover(parent1, parent2):
     
     for y in range(board_height):
         for x in range(board_width):
-            if random.random < 0.5:
+            if random.random() < 0.5:
                 child1[y, x] = parent1[y, x]
                 child2[y, x] = parent2[y, x]
             else:
