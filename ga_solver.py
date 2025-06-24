@@ -42,4 +42,15 @@ def crossover(parent1, parent2):
                 child1[y, x] = parent2[y, x]
     return child1, child2
             
+def mutation(individual, mutation_rate):
+    mutated_individual = individual.copy()
+    board_height, board_width = individual.shape
+
+    for y in range(board_height):
+        for x in range(board_width):
+            if random.random() < mutation_rate:
+                mutated_individual[y, x] = 1 - mutated_individual[y, x]
+    return mutated_individual
+
+
     
