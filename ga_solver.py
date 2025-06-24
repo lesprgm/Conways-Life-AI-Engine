@@ -24,5 +24,22 @@ def create_initial_population(population_size, width, height):
 
 def select_parents(population, fitness, tournament_size):
     participants = random.sample(list(zip(population, fitness)),tournament_size)
-    winner = max(participants, key= lambda x: x[1])
-    return winner[0]
+    parent = max(participants, key= lambda x: x[1])
+    return parent[0]
+
+def crossover(parent1, parent2):
+    board_height, board_width = parent1.shape
+    child1 = np.zeros((board_height, board_width), dtype = int)
+    child2 = np.zeros((board_height, board_width), dtype = int)
+    
+    for y in range(board_height):
+        for x in range(board_width):
+            if random.random < 0.5:
+                child1[y, x] = parent1[y, x]
+                child2[y, x] = parent2[y, x]
+            else:
+                child2[y, x] = parent1[y, x]
+                child1[y, x] = parent2[y, x]
+    return child1, child2
+            
+    
