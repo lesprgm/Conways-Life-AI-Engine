@@ -51,7 +51,7 @@ def get_board_dimensions (board):
         return 0, 0
     width = len(board[0])
     """
-    return width, height
+    return height, width
 
 def next_board_state(initial_state):
     width, height = get_board_dimensions(initial_state)
