@@ -2,13 +2,9 @@ import numpy as np
 import pygame 
 import time
 import matplotlib.pyplot as plt
-from game_of_life import(
-    dead_state,
-    random_state,
-    next_board_state,
-    get_board_dimensions,
-    render
-)
+from game_of_life import *
+from ga_solver import *
+from ga_parameters import *
 
 alive = "green"
 dead = "black"
@@ -25,21 +21,23 @@ def draw_board_pygame(screen, board_state, cell_size):
             color = alive if cell_value == 1 else dead
             pygame.draw.rect(screen, color, (x_pixel, y_pixel, cell_size, cell_size))
             
-def plot_ga_history(history):
-    graph = plt.plot(history)
+def plot_ga_results(history):
+    plt.plot(history)
     plt.xlabel('Generation')
     plt.ylabel('Best Fitness')
     plt.title('GA Fitness over generations')
     plt.show()
-    return
     
     
     
 if __name__ == "__main__":
+    evolved_pattern, fitness_history = evolve_patterns()
+    
+    plot_ga_results(fitness_history)
+    
     pygame.init()
 
-    board_width = 30
-    board_height = 30
+    board_width ,board_height = evolved_pattern.shape
 
     scree_width = board_width * cell_size
     screen_height = board_height * cell_size
@@ -48,7 +46,7 @@ if __name__ == "__main__":
 
     pygame.display.set_caption("Conway's Game of Life Test")
     
-    current_board_state = random_state(board_width, board_height)
+    current_board_state = evolved_pattern.copy()
 
 
     running = True 
