@@ -1,6 +1,7 @@
 import numpy as np
 import pygame 
 import time
+import matplotlib.pyplot as plt
 from game_of_life import(
     dead_state,
     random_state,
@@ -23,6 +24,15 @@ def draw_board_pygame(screen, board_state, cell_size):
             y_pixel = y * cell_size
             color = alive if cell_value == 1 else dead
             pygame.draw.rect(screen, color, (x_pixel, y_pixel, cell_size, cell_size))
+            
+def plot_ga_history(history):
+    graph = plt.plot(history)
+    plt.xlabel('Generation')
+    plt.ylabel('Best Fitness')
+    plt.title('GA Fitness over generations')
+    plt.show()
+    return
+    
     
     
 if __name__ == "__main__":
