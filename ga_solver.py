@@ -4,15 +4,26 @@ from ga_parameters import *
 
 def calculate_fitness ( board, num_simulation_steps):
     current_sim_board = board.copy()
-    previous_sim_board = None
+    visited_states = set()
+    visited_states.add(current_sim_board.tobytes())
+    
+    #previous_sim_board = None
     for generation in range(1, num_simulation_steps + 1):
         next_sim_board = next_board_state(current_sim_board)
         
         if not next_sim_board.any():
             return generation 
-        if previous_sim_board is not None and np.array_equal(next_sim_board, previous_sim_board):
+        
+        next_sim_board_bytes = next_sim_board.tobytes()
+        
+        if next_sim_board_bytes in visited_states:
             return generation
-        previous_sim_board = current_sim_board.copy()
+        
+        visited_states.add(next_sim_board_bytes)
+        
+        #if previous_sim_board is not None and np.array_equal(next_sim_board, previous_sim_board):
+            #return generation
+        #previous_sim_board = current_sim_board.copy()
         current_sim_board = next_sim_board.copy()
     return num_simulation_steps
     
