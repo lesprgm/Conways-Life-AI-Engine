@@ -37,7 +37,7 @@ if __name__ == "__main__":
     
     pygame.init()
 
-    board_width ,board_height = evolved_pattern.shape
+    board_height ,board_width = evolved_pattern.shape
 
     scree_width = board_width * cell_size
     screen_height = board_height * cell_size
