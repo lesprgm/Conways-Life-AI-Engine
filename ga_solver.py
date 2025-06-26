@@ -92,7 +92,9 @@ def evolve_patterns():
             break
         
         next_population = []
-        for _ in range(ga_population_size // 2):
+        next_population.append(current_best_individual.copy())
+        number_to_generate = ga_population_size -1 #the elite already takes one spot
+        for _ in range(number_to_generate // 2):
             parent1 = select_parents(population, fitnesses, ga_tournament_size)
             parent2 = select_parents(population, fitnesses, ga_tournament_size)
             
@@ -106,6 +108,11 @@ def evolve_patterns():
             
             next_population.append(mutated_child1)
             next_population.append(mutated_child2)
+            
+        while len(next_population) < ga_population_size:
+            next_population.append(best_individual.copy())
+            
+        next_population = next_population[:ga_population_size]
             
         population = next_population
 
