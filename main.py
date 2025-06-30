@@ -35,6 +35,16 @@ if __name__ == "__main__":
     
     plot_ga_results(fitness_history)
     
+    print("\n--- Verifying Evolved Pattern for Pygame ---")
+    print(f"Type of evolved_pattern: {type(evolved_pattern)}")
+    print(f"Shape of evolved_pattern: {evolved_pattern.shape}")
+    print("Content of evolved_pattern (INITIAL state, before Pygame sim starts):")
+    render(evolved_pattern) 
+
+    actual_fitness_of_displayed_pattern = calculate_fitness(evolved_pattern, ga_simulation_steps)
+    print(f"Actual fitness of this specific pattern (as per calculate_fitness): {actual_fitness_of_displayed_pattern}")
+    print("------------------------------------------\n")
+    
     pygame.init()
 
     board_height ,board_width = evolved_pattern.shape
