@@ -2,9 +2,11 @@ import numpy as np
 import pygame 
 import time
 import matplotlib.pyplot as plt
+import os
 from game_of_life import *
 from ga_solver import *
 from ga_parameters import *
+
 
 alive = "green"
 dead = "black"
@@ -28,12 +30,34 @@ def plot_ga_results(history):
     plt.title('GA Fitness over generations')
     plt.show()
     
+def save_results(pattern, history, folder="ga_results"):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    timestamp = time.strftime("%Y%m%d-%H%M%S") 
+    pattern_filename = os.path.join(folder, f"evolved_patttern_{timestamp}.txt")
+    history_filename = os.path.join(folder, f"fitness_history_{timestamp}.csv")
+    numpy_pattern_filename = os.path.join(folder, f"evolved_pattern_{timestamp}.npy")
+    
+    try:
+        np.savetxt(pattern_filename, pattern, fmt='%d')
+        np.save(numpy_pattern_filename, pattern)
+        
+        with open(history_filename, 'w') as f:
+            f.write("Generation, Best Fitness\n")
+            for i, fitness in enumerate(history):
+                f.write(f"{i+1},{fitness}\n")
+    
+    except Exception as e:
+        print(f"Error when tryig to save the results: {e}")
+    
     
     
 if __name__ == "__main__":
     evolved_pattern, fitness_history = evolve_patterns()
     
     plot_ga_results(fitness_history)
+    
+    save_results(evolved_pattern, fitness_history)
     
     print("\n--- Verifying Evolved Pattern for Pygame ---")
     print(f"Type of evolved_pattern: {type(evolved_pattern)}")
