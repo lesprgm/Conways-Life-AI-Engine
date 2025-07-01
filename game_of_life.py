@@ -1,5 +1,4 @@
 import numpy as np
-import random
 import time 
 import os
 
@@ -45,12 +44,6 @@ def render(board_state):
 def get_board_dimensions (board):
     height = board.shape[0]
     width = board.shape[1]
-    """
-    height = len(board)
-    if height == 0:
-        return 0, 0
-    width = len(board[0])
-    """
     return height, width
 
 def next_board_state(initial_state):
@@ -97,14 +90,6 @@ if __name__ == "__main__":
     BOARD_WIDTH = 40
     BOARD_HEIGHT = 20
     current_board_state = random_state(BOARD_WIDTH, BOARD_HEIGHT)
-
-    # Example of a gliders
-    # current_board_state[1][2] = 1
-    # current_board_state[2][3] = 1
-    # current_board_state[3][1] = 1
-    # current_board_state[3][2] = 1
-    # current_board_state[3][3] = 1
-
 
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
