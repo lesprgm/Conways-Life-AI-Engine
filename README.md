@@ -10,7 +10,18 @@ This project implements a fascinating intersection of cellular automata and arti
   <img src="media/demo.gif" alt="GUI Demo">
 </p>
 
+## Fitness Plot 
 
+This graph illustrates the Genetic Algorithm's evolutionary progress over **2000 generations**. With a population size of **300** and a mutation rate of **0.03**, the "Best Fitness" steadily increased in distinct steps, reflecting the GA's ability to discover fitter patterns. The fitness ultimately plateaued around **1063**, indicating the best pattern found survived for over half of the maximum possible **2000 simulation steps**.
+
+<p align="center">
+    <img src="media/fitness.png  " width="600"/>
+    <br>
+    <i>Best fitness score over 2000 generations</i>
+</p>
+
+
+---
  
 ## Core Features
 
@@ -92,11 +103,6 @@ docker run -it --rm -v ${PWD}/ga_results_host:/app/ga_results game-of-life-ga
   - `fitness_history_YYYYMMDD-HHMMSS.csv`
 
 
-
-## Screenshots *(Placeholder)*
-
-- Screenshot of fitness plot
-- Screenshot of Pygame window showing an evolved pattern
 
 ---
 
