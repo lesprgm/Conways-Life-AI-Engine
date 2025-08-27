@@ -69,12 +69,12 @@ dummy_parent2 = np.array([
 ], dtype=int) # Horizontal line in middle
 
 print("\nRaw Dummy Parent 1:")
-print(dummy_parent1) # This is what I added to help me find my zombie bug
+print(dummy_parent1)
 print("\nRendered Dummy Parent 1:")
 render(dummy_parent1)
 
 print("\nRaw Dummy Parent 2:")
-print(dummy_parent2) # This is what I added to help me find my zombie bug
+print(dummy_parent2)
 print("\nRendered Dummy Parent 2:")
 render(dummy_parent2)
 
@@ -83,12 +83,12 @@ child1, child2 = crossover(dummy_parent1, dummy_parent2)
 
 print("\n--- Observing Crossover Mixing ---")
 print("Raw Child 1:")
-print(child1) # This is what I added to help me find my zombie bug
+print(child1)
 print("\nRendered Child 1:")
 render(child1)
 
 print("\nRaw Child 2:")
-print(child2) # This is what I added to help me find my zombie bug
+print(child2)
 print("\nRendered Child 2:")
 render(child2)
 
