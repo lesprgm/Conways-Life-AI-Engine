@@ -12,13 +12,10 @@
 - [Demo](#demo)
 - [Fitness Plot](#fitness-plot)
 - [Core Features](#core-features)
-- [Technical Details](#technical-details)
 - [Genetic Algorithm Objective & Parameters](#genetic-algorithm-objective--parameters)
 - [Installation & Setup](#installation--setup-docker-focused)
 - [Usage](#usage)
 - [Output Interpretation](#output-interpretation)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
 - [Author](#author)
 
 ## Project Overview
@@ -80,66 +77,6 @@ This graph illustrates the Genetic Algorithm's evolutionary progress over **2000
 - **Docker Containerization**: Ensures consistent runtime environment across platforms
 - **Data Persistence**: Host-mapped volumes for result preservation
 - **Flexible Configuration**: Easy parameter tuning through configuration files
-
-## Technical Details
-
-### Conway's Game of Life Rules
-The Game of Life follows these simple rules that create complex emergent behavior:
-
-1. **Birth**: A dead cell with exactly 3 live neighbors becomes alive
-2. **Survival**: A live cell with 2 or 3 live neighbors stays alive
-3. **Death**: A live cell with fewer than 2 neighbors dies (underpopulation)
-4. **Death**: A live cell with more than 3 neighbors dies (overpopulation)
-
-### Genetic Algorithm Implementation
-
-#### Fitness Function
-The fitness function evaluates pattern longevity with sophisticated detection mechanisms:
-
-```python
-# Simplified fitness calculation logic
-def calculate_fitness(pattern, max_steps):
-    current_board = pattern.copy()
-    seen_states = set()
-    
-    for step in range(max_steps):
-        # Convert board to hashable format for cycle detection
-        board_hash = hash(current_board.tobytes())
-        
-        if board_hash in seen_states:
-            # Pattern entered a cycle - return current step
-            return step
-        
-        seen_states.add(board_hash)
-        next_board = apply_game_of_life_rules(current_board)
-        
-        if np.array_equal(next_board, current_board):
-            # Pattern is static (still life)
-            return step
-        
-        if not next_board.any():
-            # Pattern died completely
-            return step
-            
-        current_board = next_board
-    
-    return max_steps  # Pattern survived all steps
-```
-
-#### Selection Strategy
-- **Tournament Selection**: Randomly selects a subset of individuals and chooses the fittest
-- **Tournament Size**: Configurable (default: 5) - larger values increase selection pressure
-- **Diversity Preservation**: Prevents premature convergence while maintaining evolutionary pressure
-
-#### Crossover Method
-- **Uniform Crossover**: Each cell has a 50% chance of coming from either parent
-- **Genetic Diversity**: Creates novel combinations while preserving successful patterns
-- **Crossover Rate**: Configurable probability (default: 0.8) that crossover occurs
-
-#### Mutation Process
-- **Bit-flip Mutation**: Each cell has a small probability of flipping state (alive ↔ dead)
-- **Mutation Rate**: Low probability (default: 0.03) to maintain pattern integrity
-- **Exploration vs. Exploitation**: Balances discovering new patterns with refining existing ones
 
 ## Genetic Algorithm Objective & Parameters
 
@@ -239,22 +176,6 @@ If you prefer running without Docker:
    python main.py
    ```
 
-### Customizing Parameters
-
-Before building the Docker image, you can modify parameters in `ga_parameters.py`:
-
-```python
-# Example modifications
-ga_population_size = 100      # Smaller for faster testing
-ga_num_generations = 500      # Moderate evolution time
-ga_mutation_rate = 0.05       # Slightly higher exploration
-```
-
-After changes, rebuild the Docker image:
-```bash
-docker build --no-cache -t game-of-life-ga .
-```
-
 ## Usage
 
 ### Running with Docker (Recommended)
@@ -307,22 +228,7 @@ Execution time varies significantly based on parameters:
 |---------------|------------|-------------|--------------|
 | Quick Test | 50 | 100 | 5-10 minutes |
 | Standard | 200 | 1000 | 1-2 hours |
-| Deep Search | 500 | 2000 | 8-12 hours |
-
-### Monitoring Progress
-
-The application provides real-time feedback:
-
-```
-Generation 1/1000
-Generation 2/1000  
-Best fitness improved: 45 -> 67
-Generation 3/1000
-...
-Generation 234/1000
-Best fitness improved: 67 -> 128
-...
-```
+| Deep Search | 500 | 2000 | 10-16 hours |
 
 ## Output Interpretation
 
@@ -385,106 +291,6 @@ After evolution completes, the application displays:
 2. **Pattern Animation**: Live visualization of the best evolved pattern
 3. **Final State**: The pattern's behavior after evolution
 
-## Troubleshooting
-
-### Common Issues
-
-#### Docker Problems
-
-**Issue**: "Docker command not found"
-```bash
-# Install Docker first
-# Windows/macOS: Download Docker Desktop
-# Linux: sudo apt-get install docker.io
-```
-
-**Issue**: Permission denied errors on Linux
-```bash
-sudo usermod -aG docker $USER
-# Log out and back in, or restart terminal
-```
-
-**Issue**: "No space left on device"
-```bash
-# Clean up Docker
-docker system prune -a
-```
-
-#### Performance Issues
-
-**Issue**: Very slow execution
-- **Solution**: Reduce `ga_population_size` or `ga_simulation_steps`
-- **Alternative**: Use fewer generations for initial testing
-
-**Issue**: Memory errors
-- **Solution**: Reduce `ga_population_size` or `ga_board_width/height`
-- **Check**: Available RAM (recommend 8GB+ for large populations)
-
-#### Output Issues
-
-**Issue**: No files in `ga_results_host/`
-- **Check**: Directory exists and has write permissions
-- **Verify**: Docker volume mounting syntax for your OS
-- **Solution**: Create directory manually: `mkdir ga_results_host`
-
-**Issue**: "Permission denied" when accessing results
-```bash
-# Fix permissions (Linux/macOS)
-sudo chown -R $USER:$USER ga_results_host/
-```
-
-#### Pattern Issues
-
-**Issue**: All patterns die quickly (low fitness)
-- **Increase**: `ga_simulation_steps` to allow more evolution time
-- **Increase**: `ga_population_size` for more diversity
-- **Adjust**: `ga_mutation_rate` to balance exploration vs. exploitation
-
-**Issue**: Fitness not improving over generations
-- **Increase**: `ga_mutation_rate` for more exploration
-- **Decrease**: `ga_tournament_size` to reduce selection pressure
-- **Check**: If fitness threshold is too low
-
-### Getting Help
-
-1. **Check Parameters**: Verify `ga_parameters.py` values are reasonable
-2. **Review Logs**: Examine console output for error messages
-3. **Test Smaller**: Try reduced parameters for faster debugging
-4. **Dependencies**: Ensure all requirements are installed correctly
-
-## Contributing
-
-We welcome contributions! Here's how you can help:
-
-### Types of Contributions
-- **Bug Reports**: Found an issue? Please report it!
-- **Feature Requests**: Ideas for improvements or new features
-- **Code Contributions**: Bug fixes, optimizations, or new features
-- **Documentation**: Improvements to README, code comments, or examples
-
-### Development Setup
-1. Fork the repository
-2. Clone your fork locally
-3. Install dependencies: `pip install -r requirements.txt`
-4. Make your changes
-5. Test thoroughly
-6. Submit a pull request
-
-### Code Style
-- Follow PEP 8 Python style guidelines
-- Add comments for complex algorithms
-- Include docstrings for new functions
-- Update tests if modifying core functionality
-
-### Testing
-Run the test suite before submitting:
-```bash
-python tests/2gof_test.py
-python tests/test_ga_population.py
-python tests/test_ga_functions.py
-```
-
-
 
 ---
 
@@ -500,8 +306,3 @@ This project was created as an exploration of genetic algorithms applied to cell
 
 ### License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### Acknowledgments
-- John Conway for creating the Game of Life
-- The scientific community for advancing genetic algorithm research
-- Open source contributors who made the dependencies possible
