@@ -11,6 +11,7 @@
 - [Project Overview](#project-overview)
 - [Demo](#demo)
 - [Fitness Plot](#fitness-plot)
+- [Understanding Period-N Oscillations](#understanding-period-n-oscillations)
 - [Core Features](#core-features)
 - [Genetic Algorithm Objective & Parameters](#genetic-algorithm-objective--parameters)
 - [Installation & Setup](#installation--setup-docker-focused)
@@ -33,8 +34,18 @@ Conway's Game of Life, despite its simple rules, exhibits complex emergent behav
 
 ## Demo
 
+### Genetic Algorithm Evolution
+Watch the GA evolve patterns in real-time, discovering stable and long-lived configurations:
+
 <p align="center">
-  <img src="media/demo.gif" alt="GUI Demo">
+  <img src="media/demo.gif" alt="Genetic Algorithm Evolution Demo" width="600">
+</p>
+
+### Period-3 Pulsar Oscillation
+Example of a well-known period-3 oscillator that the GA might discover:
+
+<p align="center">
+  <img src="media/period_3_pulsar.gif" alt="Period-3 Pulsar Oscillation" width="450">
 </p>
 
 ## Fitness Plot
@@ -46,6 +57,68 @@ This graph illustrates the Genetic Algorithm's evolutionary progress over **2000
     <br>
     <i>Best fitness score over 2000 generations</i>
 </p>
+
+---
+
+## Understanding Period-N Oscillations
+
+One of the key behaviors the GA evaluates is **oscillation** - patterns that repeat after a fixed number of generations. Understanding these patterns is crucial for interpreting fitness scores and evolutionary progress.
+
+### What are Period-N Oscillations?
+
+A **period-n oscillation** is a pattern that returns to its original state after exactly **n** generations:
+- **Period 1** (Still Lifes): Patterns that never change - completely stable
+- **Period 2**: Patterns that alternate between two states
+- **Period 3**: Patterns that cycle through three distinct states before repeating
+- **Period N**: Patterns with any cycle length N
+
+### Common Examples
+
+#### Period 1 - Block (Still Life)
+The simplest stable pattern - a 2×2 square that never changes:
+
+<p align="center">
+  <img src="media/period_1_block.gif" alt="Period-1 Block Still Life" width="300">
+  <br>
+  <i>Block pattern: Completely stable (Period 1)</i>
+</p>
+
+#### Period 2 - Blinker
+A simple oscillator that alternates between horizontal and vertical orientations:
+
+<p align="center">
+  <img src="media/period_2_blinker.gif" alt="Period-2 Blinker Oscillation" width="300">
+  <br>
+  <i>Blinker: Alternates between two states (Period 2)</i>
+</p>
+
+#### Period 2 - Toad
+Another period-2 oscillator with a different pattern:
+
+<p align="center">
+  <img src="media/period_2_toad.gif" alt="Period-2 Toad Oscillation" width="360">
+  <br>
+  <i>Toad: Another period-2 oscillation pattern</i>
+</p>
+
+#### Period 3 - Pulsar
+A more complex oscillator that cycles through three distinct states:
+
+<p align="center">
+  <img src="media/period_3_pulsar.gif" alt="Period-3 Pulsar Oscillation" width="450">
+  <br>
+  <i>Pulsar: Cycles through three states (Period 3)</i>
+</p>
+
+### Why This Matters for the GA
+
+The genetic algorithm's fitness function is designed to **detect and penalize early oscillations**:
+
+1. **Early Oscillations = Lower Fitness**: If a pattern quickly settles into a simple oscillation (like a blinker appearing at generation 5), it receives a low fitness score
+2. **Late Oscillations = Higher Fitness**: Patterns that evolve for many generations *before* entering an oscillation cycle receive higher fitness scores
+3. **Complex vs. Simple**: The GA rewards patterns that maintain complexity and activity longer before stabilizing
+
+This design encourages the evolution of patterns with rich, long-lived dynamics rather than those that quickly settle into trivial behaviors.
 
 ---
  
